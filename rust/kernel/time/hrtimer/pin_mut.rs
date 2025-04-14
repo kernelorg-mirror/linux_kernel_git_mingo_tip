@@ -87,7 +87,7 @@ where
 
         // SAFETY: By the safety requirement of this function, `timer_ptr`
         // points to a `HrTimer<T>` contained in an `T`.
-        let receiver_ptr = unsafe { T::timer_container_of(timer_ptr) };
+        let receiver_ptr = unsafe { T::hrtimer_container_of(timer_ptr) };
 
         // SAFETY:
         //  - By the safety requirement of this function, `timer_ptr`

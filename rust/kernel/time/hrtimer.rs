@@ -338,7 +338,7 @@ pub unsafe trait HasHrTimer<T> {
     /// # Safety
     ///
     /// `ptr` must point to a [`HrTimer<T>`] field in a struct of type `Self`.
-    unsafe fn timer_container_of(ptr: *mut HrTimer<T>) -> *mut Self
+    unsafe fn hrtimer_container_of(ptr: *mut HrTimer<T>) -> *mut Self
     where
         Self: Sized;
 
@@ -498,7 +498,7 @@ macro_rules! impl_has_hr_timer {
             }
 
             #[inline]
-            unsafe fn timer_container_of(
+            unsafe fn hrtimer_container_of(
                 ptr: *mut $crate::time::hrtimer::HrTimer<$timer_type>,
             ) -> *mut Self {
                 // SAFETY: As per the safety requirement of this function, `ptr`

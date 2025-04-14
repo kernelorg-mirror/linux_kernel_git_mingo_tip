@@ -80,7 +80,7 @@ where
 
         // SAFETY: By C API contract `ptr` is the pointer we passed when
         // queuing the timer, so it is a `HrTimer<T>` embedded in a `T`.
-        let data_ptr = unsafe { T::timer_container_of(timer_ptr) };
+        let data_ptr = unsafe { T::hrtimer_container_of(timer_ptr) };
 
         // SAFETY:
         //  - `data_ptr` is derived form the pointer to the `T` that was used to
