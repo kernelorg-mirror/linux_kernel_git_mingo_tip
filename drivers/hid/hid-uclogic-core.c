@@ -32,7 +32,7 @@
  */
 static void uclogic_inrange_timeout(struct timer_list *t)
 {
-	struct uclogic_drvdata *drvdata = from_timer(drvdata, t,
+	struct uclogic_drvdata *drvdata = timer_container_of(drvdata, t,
 							inrange_timer);
 	struct input_dev *input = drvdata->pen_input;
 

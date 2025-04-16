@@ -199,7 +199,7 @@ static void fm10k_start_service_event(struct fm10k_intfc *interface)
  **/
 static void fm10k_service_timer(struct timer_list *t)
 {
-	struct fm10k_intfc *interface = from_timer(interface, t,
+	struct fm10k_intfc *interface = timer_container_of(interface, t,
 						   service_timer);
 
 	/* Reset the timer */

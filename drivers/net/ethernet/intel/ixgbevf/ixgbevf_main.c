@@ -3176,7 +3176,7 @@ void ixgbevf_update_stats(struct ixgbevf_adapter *adapter)
  **/
 static void ixgbevf_service_timer(struct timer_list *t)
 {
-	struct ixgbevf_adapter *adapter = from_timer(adapter, t,
+	struct ixgbevf_adapter *adapter = timer_container_of(adapter, t,
 						     service_timer);
 
 	/* Reset the timer */

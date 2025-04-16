@@ -659,7 +659,7 @@ int qib_set_lid(struct qib_pportdata *ppd, u32 lid, u8 lmc)
 
 static void qib_run_led_override(struct timer_list *t)
 {
-	struct qib_pportdata *ppd = from_timer(ppd, t,
+	struct qib_pportdata *ppd = timer_container_of(ppd, t,
 						    led_override_timer);
 	struct qib_devdata *dd = ppd->dd;
 	int timeoff;

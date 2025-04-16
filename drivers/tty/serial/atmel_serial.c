@@ -1266,7 +1266,7 @@ chan_err:
 
 static void atmel_uart_timer_callback(struct timer_list *t)
 {
-	struct atmel_uart_port *atmel_port = from_timer(atmel_port, t,
+	struct atmel_uart_port *atmel_port = timer_container_of(atmel_port, t,
 							uart_timer);
 	struct uart_port *port = &atmel_port->uart;
 

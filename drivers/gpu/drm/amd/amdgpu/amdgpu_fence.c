@@ -322,7 +322,7 @@ bool amdgpu_fence_process(struct amdgpu_ring *ring)
  */
 static void amdgpu_fence_fallback(struct timer_list *t)
 {
-	struct amdgpu_ring *ring = from_timer(ring, t,
+	struct amdgpu_ring *ring = timer_container_of(ring, t,
 					      fence_drv.fallback_timer);
 
 	if (amdgpu_fence_process(ring))

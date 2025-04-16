@@ -559,7 +559,7 @@ static void speedtch_check_status(struct work_struct *work)
 
 static void speedtch_status_poll(struct timer_list *t)
 {
-	struct speedtch_instance_data *instance = from_timer(instance, t,
+	struct speedtch_instance_data *instance = timer_container_of(instance, t,
 						             status_check_timer);
 
 	schedule_work(&instance->status_check_work);
@@ -573,7 +573,7 @@ static void speedtch_status_poll(struct timer_list *t)
 
 static void speedtch_resubmit_int(struct timer_list *t)
 {
-	struct speedtch_instance_data *instance = from_timer(instance, t,
+	struct speedtch_instance_data *instance = timer_container_of(instance, t,
 							     resubmit_timer);
 	struct urb *int_urb = instance->int_urb;
 	int ret;

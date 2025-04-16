@@ -740,7 +740,7 @@ static void vub300_deadwork_thread(struct work_struct *work)
 
 static void vub300_inactivity_timer_expired(struct timer_list *t)
 {				/* softirq */
-	struct vub300_mmc_host *vub300 = from_timer(vub300, t,
+	struct vub300_mmc_host *vub300 = timer_container_of(vub300, t,
 						    inactivity_timer);
 	if (!vub300->interface) {
 		kref_put(&vub300->kref, vub300_delete);
@@ -1180,7 +1180,7 @@ static void send_command(struct vub300_mmc_host *vub300)
  */
 static void vub300_sg_timed_out(struct timer_list *t)
 {
-	struct vub300_mmc_host *vub300 = from_timer(vub300, t,
+	struct vub300_mmc_host *vub300 = timer_container_of(vub300, t,
 						    sg_transfer_timer);
 	vub300->usb_timed_out = 1;
 	usb_sg_cancel(&vub300->sg_request);
