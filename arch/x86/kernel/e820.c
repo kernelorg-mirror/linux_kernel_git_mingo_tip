@@ -1075,7 +1075,7 @@ __init static const char * e820_type_to_string(struct e820_entry *entry)
 	case E820_TYPE_PRAM:		return "Persistent Memory (legacy)";
 	case E820_TYPE_PMEM:		return "Persistent Memory";
 	case E820_TYPE_RESERVED:	return "Reserved";
-	case E820_TYPE_SOFT_RESERVED:	return "Soft Reserved";
+	case E820_TYPE_13:		return "Type 13";
 	default:			return "Unknown E820 type";
 	}
 }
@@ -1090,6 +1090,7 @@ __init static unsigned long e820_type_to_iomem_type(struct e820_entry *entry)
 	case E820_TYPE_PRAM:		/* Fall-through: */
 	case E820_TYPE_PMEM:		/* Fall-through: */
 	case E820_TYPE_RESERVED:	/* Fall-through: */
+	case E820_TYPE_13:		/* Fall-through: */
 	case E820_TYPE_SOFT_RESERVED:	/* Fall-through: */
 	default:			return IORESOURCE_MEM;
 	}
@@ -1102,7 +1103,8 @@ __init static unsigned long e820_type_to_iores_desc(struct e820_entry *entry)
 	case E820_TYPE_NVS:		return IORES_DESC_ACPI_NV_STORAGE;
 	case E820_TYPE_PMEM:		return IORES_DESC_PERSISTENT_MEMORY;
 	case E820_TYPE_PRAM:		return IORES_DESC_PERSISTENT_MEMORY_LEGACY;
-	case E820_TYPE_RESERVED:	return IORES_DESC_RESERVED;
+	case E820_TYPE_RESERVED:	/* Fall-through: */
+	case E820_TYPE_13:		return IORES_DESC_RESERVED;
 	case E820_TYPE_SOFT_RESERVED:	return IORES_DESC_SOFT_RESERVED;
 	case E820_TYPE_RAM:		/* Fall-through: */
 	case E820_TYPE_UNUSABLE:	/* Fall-through: */
@@ -1132,6 +1134,7 @@ __init static bool e820_device_region(enum e820_type type, struct resource *res)
 	 */
 	switch (type) {
 	case E820_TYPE_RESERVED:
+	case E820_TYPE_13:
 	case E820_TYPE_SOFT_RESERVED:
 	case E820_TYPE_PRAM:
 	case E820_TYPE_PMEM:
@@ -1140,6 +1143,10 @@ __init static bool e820_device_region(enum e820_type type, struct resource *res)
 	case E820_TYPE_ACPI:
 	case E820_TYPE_NVS:
 	case E820_TYPE_UNUSABLE:
+	/*
+	 * Unknown E820 types should be treated passively, here we
+	 * don't allow them to be claimed by device drivers:
+	 */
 	default:
 		return false;
 	}

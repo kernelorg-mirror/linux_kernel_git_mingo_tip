@@ -27,6 +27,10 @@ enum e820_type {
 	 *   6 was assigned differently. Some time they will learn... )
 	 */
 	E820_TYPE_PRAM		= 12,
+	/*
+	 * Certain firmware such as CoreBoot uses this type:
+	 */
+	E820_TYPE_13		= 13,
 
 	/*
 	 * Special-purpose memory is indicated to the system via the
