@@ -199,6 +199,41 @@ static void __init e820_print_type(enum e820_type type)
 	}
 }
 
+/*
+ * Print out the size of a E820 region, in human-readable
+ * fashion, going from KB, MB, GB to TB units.
+ *
+ * Print out fractional sizes with a single digit of precision.
+ */
+static void e820_print_size(u64 size)
+{
+	if (size < SZ_1M) {
+		if (size & (SZ_1K-1))
+			pr_cont(" %4llu.%01llu KB", size/SZ_1K, 10*(size & (SZ_1K-1))/SZ_1K);
+		else
+			pr_cont(" %4llu   KB", size/SZ_1K);
+		return;
+	}
+	if (size < SZ_1G) {
+		if (size & (SZ_1M-1))
+			pr_cont(" %4llu.%01llu MB", size/SZ_1M, 10*(size & (SZ_1M-1))/SZ_1M);
+		else
+			pr_cont(" %4llu   MB", size/SZ_1M);
+		return;
+	}
+	if (size < SZ_1T) {
+		if (size & (SZ_1G-1))
+			pr_cont(" %4llu.%01llu GB", size/SZ_1G, 10*(size & (SZ_1G-1))/SZ_1G);
+		else
+			pr_cont(" %4llu   GB", size/SZ_1G);
+		return;
+	}
+	if (size & (SZ_1T-1))
+		pr_cont(" %4llu.%01llu TB", size/SZ_1T, 10*(size & (SZ_1T-1))/SZ_1T);
+	else
+		pr_cont(" %4llu   TB", size/SZ_1T);
+}
+
 static void __init e820__print_table(const char *who)
 {
 	u64 range_end_prev = 0;
@@ -215,14 +250,22 @@ static void __init e820__print_table(const char *who)
 		if (range_start < range_end_prev)
 			pr_info(FW_BUG "out of order E820 entry!\n");
 
+		/* Print gaps, if any: */
 		if (range_start > range_end_prev) {
-			pr_info("%s: [gap %#018Lx-%#018Lx]\n",
+			u64 gap_size = range_start - range_end_prev;
+
+			pr_info("%s: [gap %#018Lx-%#018Lx]",
 				who,
 				range_end_prev,
 				range_start-1);
+
+			e820_print_size(gap_size);
+			pr_cont(" ...\n");
 		}
 
-		pr_info("%s: [mem %#018Lx-%#018Lx] ", who, range_start, range_end-1);
+		/* Print allocated ranges: */
+		pr_info("%s: [mem %#018Lx-%#018Lx]", who, range_start, range_end-1);
+		e820_print_size(entry->size);
 		e820_print_type(entry->type);
 		pr_cont("\n");
 
