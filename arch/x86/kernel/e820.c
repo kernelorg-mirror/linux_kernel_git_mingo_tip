@@ -68,6 +68,26 @@ unsigned long pci_mem_start = 0xaeedbabe;
 EXPORT_SYMBOL(pci_mem_start);
 #endif
 
+__init static const char * e820_type_to_string(enum e820_type type)
+{
+	switch (type) {
+	case E820_TYPE_RAM:		return "System RAM";
+	case E820_TYPE_ACPI:		return "ACPI tables";
+	case E820_TYPE_NVS:		return "ACPI non-volatile storage";
+	case E820_TYPE_UNUSABLE:	return "Unusable memory";
+	case E820_TYPE_PRAM:		return "Persistent memory (legacy)";
+	case E820_TYPE_PMEM:		return "Persistent memory";
+	case E820_TYPE_RESERVED:	return "Device reserved";
+	case E820_TYPE_13:		return "Type 13";
+	default:			return "Unknown E820 type";
+	}
+}
+
+__init static void e820_print_type(enum e820_type type)
+{
+	pr_cont(" %s", e820_type_to_string(type));
+}
+
 /*
  * This function checks if any part of the range <start,end> is mapped
  * with type.
@@ -184,21 +204,6 @@ __init static void __e820__range_add(struct e820_table *table, u64 start, u64 si
 __init void e820__range_add(u64 start, u64 size, enum e820_type type)
 {
 	__e820__range_add(e820_table, start, size, type);
-}
-
-__init static void e820_print_type(enum e820_type type)
-{
-	switch (type) {
-	case E820_TYPE_RAM:		pr_cont(" System RAM");				break;
-	case E820_TYPE_RESERVED:	pr_cont(" device reserved");			break;
-	case E820_TYPE_SOFT_RESERVED:	pr_cont(" soft reserved");			break;
-	case E820_TYPE_ACPI:		pr_cont(" ACPI data");				break;
-	case E820_TYPE_NVS:		pr_cont(" ACPI NVS");				break;
-	case E820_TYPE_UNUSABLE:	pr_cont(" unusable");				break;
-	case E820_TYPE_PMEM:		/* Fall through: */
-	case E820_TYPE_PRAM:		pr_cont(" persistent RAM (type %u)", type);	break;
-	default:			pr_cont(" type %u", type);			break;
-	}
 }
 
 /*
@@ -1062,21 +1067,6 @@ __init void e820__finish_early_params(void)
 
 		pr_info("user-defined physical RAM map:\n");
 		e820__print_table("user");
-	}
-}
-
-__init static const char * e820_type_to_string(enum e820_type type)
-{
-	switch (type) {
-	case E820_TYPE_RAM:		return "System RAM";
-	case E820_TYPE_ACPI:		return "ACPI Tables";
-	case E820_TYPE_NVS:		return "ACPI Non-volatile Storage";
-	case E820_TYPE_UNUSABLE:	return "Unusable memory";
-	case E820_TYPE_PRAM:		return "Persistent Memory (legacy)";
-	case E820_TYPE_PMEM:		return "Persistent Memory";
-	case E820_TYPE_RESERVED:	return "Reserved";
-	case E820_TYPE_13:		return "Type 13";
-	default:			return "Unknown E820 type";
 	}
 }
 
