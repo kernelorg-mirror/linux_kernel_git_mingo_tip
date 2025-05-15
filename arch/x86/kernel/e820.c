@@ -1065,9 +1065,9 @@ __init void e820__finish_early_params(void)
 	}
 }
 
-__init static const char * e820_type_to_string(struct e820_entry *entry)
+__init static const char * e820_type_to_string(enum e820_type type)
 {
-	switch (entry->type) {
+	switch (type) {
 	case E820_TYPE_RAM:		return "System RAM";
 	case E820_TYPE_ACPI:		return "ACPI Tables";
 	case E820_TYPE_NVS:		return "ACPI Non-volatile Storage";
@@ -1175,7 +1175,7 @@ __init void e820__reserve_resources(void)
 		}
 		res->start = entry->addr;
 		res->end   = end;
-		res->name  = e820_type_to_string(entry);
+		res->name  = e820_type_to_string(entry->type);
 		res->flags = e820_type_to_iomem_type(entry);
 		res->desc  = e820_type_to_iores_desc(entry);
 
@@ -1195,7 +1195,7 @@ __init void e820__reserve_resources(void)
 	for (idx = 0; idx < e820_table_kexec->nr_entries; idx++) {
 		struct e820_entry *entry = e820_table_kexec->entries + idx;
 
-		firmware_map_add_early(entry->addr, entry->addr + entry->size, e820_type_to_string(entry));
+		firmware_map_add_early(entry->addr, entry->addr + entry->size, e820_type_to_string(entry->type));
 	}
 }
 
