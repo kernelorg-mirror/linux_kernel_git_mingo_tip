@@ -354,10 +354,6 @@ $(orc_hash_h): $(srctree)/arch/x86/include/asm/orc_types.h $(orc_hash_sh) FORCE
 archprepare: $(orc_hash_h)
 endif
 
-archclean:
-	$(Q)rm -rf $(objtree)/arch/i386
-	$(Q)rm -rf $(objtree)/arch/x86_64
-
 define archhelp
   echo  '* bzImage		- Compressed kernel image (arch/x86/boot/bzImage)'
   echo  '  install		- Install kernel using (your) ~/bin/$(INSTALLKERNEL) or'
