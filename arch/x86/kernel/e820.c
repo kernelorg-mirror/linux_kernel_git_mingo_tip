@@ -421,9 +421,11 @@ __init int e820__update_table(struct e820_table *table)
 	for (idx = 0; idx < table->nr_entries; idx++)	{
 		if (entries[idx].size != 0) {
 			change_point[chg_idx]->addr	= entries[idx].addr;
-			change_point[chg_idx++]->entry	= &entries[idx];
+			change_point[chg_idx]->entry	= &entries[idx];
+			chg_idx++;
 			change_point[chg_idx]->addr	= entries[idx].addr + entries[idx].size;
-			change_point[chg_idx++]->entry	= &entries[idx];
+			change_point[chg_idx]->entry	= &entries[idx];
+			chg_idx++;
 		}
 	}
 	chg_nr = chg_idx;
