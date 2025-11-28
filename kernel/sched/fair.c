@@ -8909,11 +8909,12 @@ static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
 	struct cfs_rq *cfs_rq;
 	struct task_struct *p;
 	bool throttled;
+	int new_tasks;
 
 again:
 	cfs_rq = &rq->cfs;
 	if (!cfs_rq->nr_queued)
-		return NULL;
+		goto idle;
 
 	throttled = false;
 
@@ -8934,6 +8935,14 @@ again:
 	if (unlikely(throttled))
 		task_throttle_setup_work(p);
 	return p;
+
+idle:
+	new_tasks = sched_balance_newidle(rq, rf);
+	if (new_tasks < 0)
+		return RETRY_TASK;
+	if (new_tasks > 0)
+		goto again;
+	return NULL;
 }
 
 static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
